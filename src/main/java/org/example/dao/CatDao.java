@@ -12,7 +12,7 @@ import java.sql.Statement;
 
 public class CatDao {
 
-    private static final String CREATE_TABLE_CAT_SQL = """
+    private final String CREATE_TABLE_CAT_SQL = """
             CREATE TABLE IF NOT EXISTS cat (
                 id BIGINT, 
                 name VARCHAR(30)
@@ -58,9 +58,7 @@ public class CatDao {
         try (final var statement = connection.createStatement()) {
 
             statement.execute(CREATE_TABLE_CAT_SQL);
-
             System.out.println("Table cat created!");
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -86,7 +84,6 @@ public class CatDao {
             statement.execute(SAVE_CAT_SQL.formatted(cat.getId(), cat.getName()));
 
             System.out.println("Cat save! " + cat);
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -97,7 +94,6 @@ public class CatDao {
         try (final var statement = connection.createStatement()) {
 
             var resultSet = statement.executeQuery(GET_CAT_SQL.formatted(id));
-
             resultSet.next();
 
             return new Cat(resultSet.getLong("id"), resultSet.getString("name"));
