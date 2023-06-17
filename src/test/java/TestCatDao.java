@@ -6,6 +6,7 @@ import org.opentest4j.AssertionFailedError;
 
 import java.lang.reflect.Executable;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCatDao {
 
 //    @BeforeAll
@@ -40,6 +41,8 @@ public class TestCatDao {
     }
 
     @Test
+    @Order(6)
+    @DisplayName("Создание таблицы")
     void createTableTest() {
 
         for (int i = 0; i < 2; i++) {
@@ -48,6 +51,8 @@ public class TestCatDao {
     }
 
     @Test
+    @Order(5)
+    @DisplayName("Удаление таблицы")
     void dropTableTest() {
 
         for (int i = 0; i < 2; i++) {
@@ -56,6 +61,8 @@ public class TestCatDao {
     }
 
     @Test
+    @Order(4)
+    @DisplayName("Сохранение сущности")
     void saveCat() {
 
         for (Cat cat : cats) {
@@ -68,6 +75,8 @@ public class TestCatDao {
     }
 
     @Test
+    @Order(3)
+    @DisplayName("Запрос сущности")
     void getCat() {
 
         catDao.saveCat(cats[0]);
@@ -78,6 +87,8 @@ public class TestCatDao {
     }
 
     @Test
+    @Order(2)
+    @DisplayName("Обновление сущности")
     void updateCat() {
 
         final var cat = cats[0];
@@ -90,6 +101,8 @@ public class TestCatDao {
     }
 
     @Test
+    @Order(1)
+    @DisplayName("Удаление сущности")
     void deleteCat() {
 
         catDao.saveCat(cats[0]);
