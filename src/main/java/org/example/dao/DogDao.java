@@ -30,6 +30,21 @@ public class DogDao {
             WHERE id = %d
             """;
 
+    private final String UPDATE_DOG_SQL = """
+            UPDATE 
+            dog
+            SET
+            id = %d,
+            name = %s,
+            is_home = %b,
+            WHERE 
+            id = %d
+            """;
+    private final String DELETE_DOG_SQL = """
+            DELETE FROM dog
+            WHERE id = %d
+            """;
+
     private final Connection connection = UtilConnection.getConnection();
 
     public void createTable() {
@@ -78,4 +93,23 @@ public class DogDao {
         }
     }
 
+    public void updateDog(Dog dog) {
+
+        try (var statement = connection.createStatement()){
+
+            final var sql = UPDATE_DOG_SQL.formatted(dog.getId(), dog.getName(), dog.isHome());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteDogId(long id) {
+       try (var statement = connection.createStatement()){
+
+            final var sql = DELETE_DOG_SQL.formatted(id);
+            statement.execute(sql);
+        } catch (SQLException e) {
+           throw new RuntimeException(e);
+       }
+    }
 }
