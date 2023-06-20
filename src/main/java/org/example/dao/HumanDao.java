@@ -7,12 +7,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+//DZ
 public class HumanDao {
+
     private final String CREATE_TABLE_HUMAN_SQL = """
             CREATE TABLE IF NOT EXISTS human (
-            id BIGINT,
-            name VARCHAR(30),
-            last_name VARCHAR(30)
+                id BIGINT,
+                name VARCHAR(30),
+                last_name VARCHAR(30)
             );
             """;
 
@@ -21,15 +23,18 @@ public class HumanDao {
             """;
     private final String GET_HUMAN_SQL = """
             SELECT *
-            FROM human
-            WHERE id = %d
+            FROM 
+                human
+            WHERE 
+                id = %d
             """;
     private final String SAVE_HUMAN_SQL = """
             INSERT INTO human(id, name, last_name)
             VALUES ( %d, '%s', '%s')
             """;
     private final String UPDATE_HUMAN_SQL = """
-            UPDATE human
+            UPDATE 
+                human
             SET 
                 id = %d,
                 name = '%s',
@@ -103,7 +108,8 @@ public class HumanDao {
             final var sqlUpdate = UPDATE_HUMAN_SQL.formatted(
                     human.getId(),
                     human.getName(),
-                    human.getLastName());
+                    human.getLastName(),
+                    human.getId());
 
             statement.execute(sqlUpdate);
         } catch (SQLException e) {

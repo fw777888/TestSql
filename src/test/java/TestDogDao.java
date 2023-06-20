@@ -2,7 +2,9 @@ import org.example.dao.DogDao;
 import org.example.model.Dog;
 import org.junit.jupiter.api.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+import java.util.logging.Logger;
+
+//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestDogDao {
     DogDao dogDao = new DogDao();
 
@@ -53,10 +55,10 @@ public class TestDogDao {
     void saveDog() {
 
         for (Dog dog : dogs) {
-            dogDao.saveDog(dog);
+            dogDao.save(dog);
         }
         for (int i = 0; i < dogs.length; i++) {
-            Assertions.assertEquals(dogs[i], dogDao.getDog(++i));
+            Assertions.assertEquals(dogs[i], dogDao.get(Long.valueOf(i) + 1));
         }
     }
 
@@ -65,8 +67,8 @@ public class TestDogDao {
     @Order(2)
     @DisplayName("Get dog")
     void getDog() {
-        dogDao.saveDog(dogs[0]);
-        final var returnDog = dogDao.getDog(1);
+        dogDao.save(dogs[0]);
+        final var returnDog = dogDao.get(1L);
 
         Assertions.assertEquals(dogs[0], returnDog);
     }
@@ -77,11 +79,11 @@ public class TestDogDao {
     void updateDog() {
         final var dog = dogs[0];
 
-        dogDao.saveDog(dog);
+        dogDao.save(dog);
         dog.setName("Sobaka");
-        dogDao.updateDog(dog);
+        dogDao.update(dog);
 
-        Assertions.assertEquals(dog, dogDao.getDog(1));
+        Assertions.assertEquals(dog, dogDao.get(1L));
     }
 
     @Test
@@ -89,11 +91,12 @@ public class TestDogDao {
     @DisplayName("Deleting dog")
     void deleteDog() {
 
-        dogDao.saveDog(dogs[0]);
-        dogDao.deleteDogId(1);
+        dogDao.save(dogs[0]);
+        dogDao.deleteId(1L);
+
         Assertions.assertThrowsExactly(
                 RuntimeException.class,
-                () -> dogDao.getDog(1));
+                () -> dogDao.get(1L));
     }
 
     @AfterEach

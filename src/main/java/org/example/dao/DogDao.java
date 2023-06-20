@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DogDao {
+public class DogDao implements Dao<Long, Dog> {
     private final String CREATE_TABLE_DOG_SQL = """
             CREATE TABLE IF NOT EXISTS dog (
             id BIGINT,
@@ -22,31 +22,36 @@ public class DogDao {
 
     private  final String SAVE_DOG_SQL = """
             INSERT INTO dog(id, name, is_home)
-            VALUES ( %d, %s, %b )
+            VALUES ( %d, '%s', %b )
             """;
     private final String GET_DOG_SQL = """
             SELECT *
-            FROM dog
-            WHERE id = %d
+            FROM 
+                dog
+            WHERE 
+                id = %d
             """;
 
     private final String UPDATE_DOG_SQL = """
             UPDATE 
-            dog
+                dog
             SET
-            id = %d,
-            name = %s,
-            is_home = %b,
+                id = %d,
+                name = '%s',
+                is_home = %b,
             WHERE 
-            id = %d
+                id = %d
             """;
     private final String DELETE_DOG_SQL = """
-            DELETE FROM dog
-            WHERE id = %d
+            DELETE FROM 
+                dog
+            WHERE 
+                id = %d
             """;
 
     private final Connection connection = UtilConnection.getConnection();
 
+    @Override
     public void createTable() {
 
         try (var statement = connection.createStatement()) {
@@ -58,6 +63,7 @@ public class DogDao {
         }
     }
 
+    @Override
     public void dropTable() {
         try (var statement = connection.createStatement()) {
             statement.execute(DROP_TABLE_DOG_SQL);
@@ -67,17 +73,19 @@ public class DogDao {
         }
     }
 
-    public void saveDog(Dog dog) {
+    @Override
+    public void save(Dog element) {
         try (var statement = connection.createStatement()) {
 
-            statement.execute(SAVE_DOG_SQL.formatted(dog.getId(), dog.getName(), dog.isHome()));
-            System.out.println("Dog save " + dog);
+            statement.execute(SAVE_DOG_SQL.formatted(element.getId(), element.getName(), element.isHome()));
+            System.out.println("Dog save " + element);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Dog getDog(long id) {
+    @Override
+    public Dog get(Long id) {
 
         try (var statement = connection.createStatement()) {
 
@@ -93,17 +101,19 @@ public class DogDao {
         }
     }
 
-    public void updateDog(Dog dog) {
+    @Override
+    public void update(Dog dog) {
 
         try (var statement = connection.createStatement()){
 
-            final var sql = UPDATE_DOG_SQL.formatted(dog.getId(), dog.getName(), dog.isHome());
+            final var sql = UPDATE_DOG_SQL.formatted(dog.getId(), dog.getName(), dog.isHome(), dog.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void deleteDogId(long id) {
+    @Override
+    public void deleteId(Long id) {
        try (var statement = connection.createStatement()){
 
             final var sql = DELETE_DOG_SQL.formatted(id);

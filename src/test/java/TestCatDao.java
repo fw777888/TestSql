@@ -1,12 +1,10 @@
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.Cat;
 import org.example.dao.CatDao;
-import org.h2.jdbc.JdbcSQLNonTransientException;
 import org.junit.jupiter.api.*;
-import org.opentest4j.AssertionFailedError;
 
-import java.lang.reflect.Executable;
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+@Slf4j
 public class TestCatDao {
 
 //    @BeforeAll
@@ -26,38 +24,13 @@ public class TestCatDao {
 
     @BeforeAll
     static void beforeAll() {
-        System.out.println("Tests start!");
-        System.out.println();
+        log.info("Test start!");
     }
 
     @BeforeEach
     void before() {
-        System.out.println("Next test start!");
-        System.out.println(this);
-
-        System.out.println();
-
+        log.info("Next test start!");
         catDao.createTable();
-    }
-
-    @Test
-    @Order(6)
-    @DisplayName("Создание таблицы")
-    void createTableTest() {
-
-        for (int i = 0; i < 2; i++) {
-            catDao.createTable();
-        }
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("Удаление таблицы")
-    void dropTableTest() {
-
-        for (int i = 0; i < 2; i++) {
-            catDao.dropTable();
-        }
     }
 
     @Test
@@ -66,11 +39,11 @@ public class TestCatDao {
     void saveCat() {
 
         for (Cat cat : cats) {
-            catDao.saveCat(cat);
+            catDao.save(cat);
         }
 
         for (int i = 0; i < cats.length; i++) {
-            Assertions.assertEquals(cats[i], catDao.getCat(++i));
+            Assertions.assertEquals(cats[i], catDao.get(Long.valueOf(i + 1)));
         }
     }
 
@@ -79,9 +52,9 @@ public class TestCatDao {
     @DisplayName("Запрос сущности")
     void getCat() {
 
-        catDao.saveCat(cats[0]);
+        catDao.save(cats[0]);
 
-        final var returnCat = catDao.getCat(1);
+        final var returnCat = catDao.get(1L);
 
         Assertions.assertEquals(cats[0], returnCat);
     }
@@ -93,11 +66,11 @@ public class TestCatDao {
 
         final var cat = cats[0];
 
-        catDao.saveCat(cat);
+        catDao.save(cat);
         cat.setName("Sonya");
-        catDao.updateCat(cat);
+        catDao.update(cat);
 
-        Assertions.assertEquals(cat, catDao.getCat(1));
+        Assertions.assertEquals(cat, catDao.get(1L));
     }
 
     @Test
@@ -105,25 +78,46 @@ public class TestCatDao {
     @DisplayName("Удаление сущности")
     void deleteCat() {
 
-        catDao.saveCat(cats[0]);
-        catDao.deleteCatId(1);
+        catDao.save(cats[0]);
+        catDao.deleteId(1L);
 
         Assertions.assertThrowsExactly(
                 RuntimeException.class,
-                () -> catDao.getCat(1));
+                () -> catDao.get(1L));
+    }
+
+    @DisplayName("Тестирование таблицы")
+    @Nested
+    class TestTable {
+        @Test
+        @Order(6)
+        @DisplayName("Создание таблицы")
+        void createTableTest() {
+
+            for (int i = 0; i < 2; i++) {
+                catDao.createTable();
+            }
+        }
+
+        @Test
+        @Order(5)
+        @DisplayName("Удаление таблицы")
+        void dropTableTest() {
+
+            for (int i = 0; i < 2; i++) {
+                catDao.dropTable();
+            }
+        }
     }
 
     @AfterEach
     void after() {
-        System.out.println("Next test complete!");
-
-        System.out.println();
-
+        log.info("Next test complete!");
         catDao.dropTable();
     }
 
     @AfterAll
     static void afterAll() {
-        System.out.println("Tests complete!");
+        log.info("Tests complete!");
     }
 }

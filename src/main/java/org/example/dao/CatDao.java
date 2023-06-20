@@ -7,10 +7,13 @@ import org.example.util.UtilConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 // CRUD - Create Read Update Delete
 
-public class CatDao {
+public class CatDao implements Dao<Long, Cat> {
 
     private final String CREATE_TABLE_CAT_SQL = """
             CREATE TABLE IF NOT EXISTS cat (
@@ -52,46 +55,46 @@ public class CatDao {
 
     private final Connection connection = UtilConnection.getConnection();
 
+    @Override
     public void createTable() {
 
         try (final var statement = connection.createStatement()) {
-
             statement.execute(CREATE_TABLE_CAT_SQL);
+
             System.out.println("Table cat created!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public void dropTable() {
 
         try (final var statement = connection.createStatement()) {
-
             statement.execute(DROP_TABLE_CAT_SQL);
 
             System.out.println("Table cat deleted!");
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void saveCat(Cat cat) {
+    @Override
+    public void save(Cat element) {
 
         try (final var statement = connection.createStatement()) {
+            statement.execute(SAVE_CAT_SQL.formatted(element.getId(), element.getName()));
 
-            statement.execute(SAVE_CAT_SQL.formatted(cat.getId(), cat.getName()));
-
-            System.out.println("Cat save! " + cat);
+            System.out.println("Cat save! " + element);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Cat getCat(long id) {
+    @Override
+    public Cat get(Long id) {
 
         try (final var statement = connection.createStatement()) {
-
             var resultSet = statement.executeQuery(GET_CAT_SQL.formatted(id));
             resultSet.next();
 
@@ -103,14 +106,14 @@ public class CatDao {
         }
     }
 
-    public void updateCat(Cat cat) {
+    @Override
+    public void update(Cat element) {
 
         try (var statement = connection.createStatement()){
-
             final var sql = UPDATE_CAT_SQL.formatted(
-                    cat.getId(),
-                    cat.getName(),
-                    cat.getId());
+                    element.getId(),
+                    element.getName(),
+                    element.getId());
 
             statement.execute(sql);
         } catch (SQLException e) {
@@ -118,10 +121,10 @@ public class CatDao {
         }
     }
 
-    public void deleteCatId(long id) {
+    @Override
+    public void deleteId(Long id) {
 
         try (var statement = connection.createStatement()) {
-
             final var sql = DELETE_CAT_SQL.formatted(id);
 
             statement.execute(sql);
