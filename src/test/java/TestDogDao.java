@@ -29,6 +29,7 @@ public class TestDogDao {
     }
 
     @Test
+    @Order(1)
     @DisplayName("Creating table dog")
     void createTableTest() {
         for (int i = 0; i < 3; i++) {
@@ -37,6 +38,7 @@ public class TestDogDao {
     }
 
     @Test
+    @Order(6)
     @DisplayName("Deleting table")
     void dropTableTest() {
 
@@ -46,22 +48,31 @@ public class TestDogDao {
     }
 
     @Test
+    @Order(3)
     @DisplayName("Save a dog")
     void saveDog() {
 
         for (Dog dog : dogs) {
             dogDao.saveDog(dog);
         }
+        for (int i = 0; i < dogs.length; i++) {
+            Assertions.assertEquals(dogs[i], dogDao.getDog(++i));
+        }
     }
 
+
     @Test
+    @Order(2)
     @DisplayName("Get dog")
     void getDog() {
         dogDao.saveDog(dogs[0]);
         final var returnDog = dogDao.getDog(1);
+
+        Assertions.assertEquals(dogs[0], returnDog);
     }
 
     @Test
+    @Order(4)
     @DisplayName(("Update dog"))
     void updateDog() {
         final var dog = dogs[0];
@@ -69,14 +80,20 @@ public class TestDogDao {
         dogDao.saveDog(dog);
         dog.setName("Sobaka");
         dogDao.updateDog(dog);
+
+        Assertions.assertEquals(dog, dogDao.getDog(1));
     }
 
     @Test
+    @Order(5)
     @DisplayName("Deleting dog")
     void deleteDog() {
 
         dogDao.saveDog(dogs[0]);
         dogDao.deleteDogId(1);
+        Assertions.assertThrowsExactly(
+                RuntimeException.class,
+                () -> dogDao.getDog(1));
     }
 
     @AfterEach
@@ -88,7 +105,7 @@ public class TestDogDao {
     }
 
     @AfterAll
-    void afterAll() {
+    static void afterAll() {
         System.out.println("All tests completed");
     }
 

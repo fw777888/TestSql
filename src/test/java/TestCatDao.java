@@ -108,7 +108,9 @@ public class TestCatDao {
         catDao.saveCat(cats[0]);
         catDao.deleteCatId(1);
 
-        Assertions.assertThrowsExactly(RuntimeException.class, () -> catDao.getCat(1));
+        Assertions.assertThrowsExactly(
+                RuntimeException.class,
+                () -> catDao.getCat(1));
     }
 
     @AfterEach
