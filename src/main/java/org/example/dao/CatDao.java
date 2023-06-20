@@ -35,8 +35,7 @@ public class CatDao {
             """;
 
     private final String UPDATE_CAT_SQL = """
-            UPDATE 
-                cat
+            UPDATE cat
             SET
                 id = %d,
                 name = '%s' 
@@ -96,7 +95,9 @@ public class CatDao {
             var resultSet = statement.executeQuery(GET_CAT_SQL.formatted(id));
             resultSet.next();
 
-            return new Cat(resultSet.getLong("id"), resultSet.getString("name"));
+            return new Cat(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -106,7 +107,10 @@ public class CatDao {
 
         try (var statement = connection.createStatement()){
 
-            final var sql = UPDATE_CAT_SQL.formatted(cat.getId(), cat.getName(), cat.getId());
+            final var sql = UPDATE_CAT_SQL.formatted(
+                    cat.getId(),
+                    cat.getName(),
+                    cat.getId());
 
             statement.execute(sql);
         } catch (SQLException e) {
