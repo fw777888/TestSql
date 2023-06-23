@@ -1,0 +1,4 @@
+1) Docker Postgres - поднять
+2) Prepared Statement
+
+DataGrip

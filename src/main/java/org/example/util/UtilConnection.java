@@ -1,7 +1,5 @@
 package org.example.util;
 
-import org.h2.Driver;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -40,7 +38,7 @@ public class UtilConnection {
 
     private static void loadDriver() {
         try {
-            Class.forName("org.h2.Driver");
+            Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

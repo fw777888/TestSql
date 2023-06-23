@@ -1,8 +1,10 @@
 package org.example;
 
 import org.example.dao.CatDao;
+import org.example.dao.HumanDao;
 import org.example.model.Cat;
 import org.example.model.Dog;
+import org.example.model.Human;
 
 public class Runner {
     public static void main(String[] args) {
@@ -23,18 +25,30 @@ public class Runner {
 //        catDao.saveCat(cat4);
 //        catDao.saveCat(cat5);
 
-        Dog dog = new Dog(1L, "Shar", true);
+//        Dog dog = new Dog(1L, "Shar", true);
+//
+//        final var pushok = Dog.builder()
+//                .id(2L)
+//                .name("Pushok")
+//                .isHome(true)
+//                .build();
+//
+//        dog.setName("Tuzik");
+//        dog.setId(2L);
+//
+//        System.out.println(dog.getName());
+//        System.out.println(dog.getId());
 
-        final var pushok = Dog.builder()
-                .id(2L)
-                .name("Pushok")
-                .isHome(true)
+        final var max = Human.builder()
+                .id(1L)
+                .name("Max")
+                .lastName("Smirnov")
                 .build();
 
-        dog.setName("Tuzik");
-        dog.setId(2L);
+        HumanDao humanDao = new HumanDao();
+        humanDao.createTable();
 
-        System.out.println(dog.getName());
-        System.out.println(dog.getId());
+//        humanDao.save(max);
+        System.out.println(humanDao.get(1L));
     }
 }

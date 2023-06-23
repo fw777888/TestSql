@@ -1,0 +1,12 @@
+https://phoenixnap.com/kb/docker-commands-cheat-sheet
+https://www.youtube.com/watch?v=_uZQtRyF6Eg
+https://www.youtube.com/@dmdev/playlists
+
+
+
+               порты             имя контей.            пароль              образ
+docker run -p 2222:5432 --name some-postgres -e POSTGRES_PASSWORD=root -d postgres
+
+-e POSTGRES_USER=root
+-e POSTGRES_DB=userdb
+По умолчанию имя бд и имя юзера postgres
