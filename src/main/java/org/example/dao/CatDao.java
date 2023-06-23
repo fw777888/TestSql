@@ -71,8 +71,8 @@ public class CatDao implements Dao<Long, Cat> {
     public void dropTable() {
 
         try (final var statement = connection.createStatement()) {
-            statement.execute(DROP_TABLE_CAT_SQL);
 
+            statement.execute(DROP_TABLE_CAT_SQL);
             System.out.println("Table cat deleted!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
