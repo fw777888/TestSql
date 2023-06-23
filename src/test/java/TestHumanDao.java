@@ -1,8 +1,10 @@
+import lombok.extern.slf4j.Slf4j;
 import org.example.dao.HumanDao;
 import org.example.model.Human;
 import org.junit.jupiter.api.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Slf4j
 public class TestHumanDao {
     HumanDao humanDao = new HumanDao();
 
@@ -13,96 +15,94 @@ public class TestHumanDao {
     } ;
 
     @BeforeAll
-    static void beforeAll() {
-        System.out.println("Test starts");
-        System.out.println();
-    }
+    static void beforeAll() { log.info("Test starts");}
 
     @BeforeEach
-    void before() {
-        System.out.println("Next test starts");
-        System.out.println(this);
-        System.out.println();
+    void before() {log.info("Next test starts");
         humanDao.createTable();
     }
 
-    @Test
-    @Order(1)
-    @DisplayName("Creating a table")
-    void createTableTest() {
-        for (int i = 0; i < 3; i++) {
-            humanDao.createTable();
-        }
-    }
+
 
     @Test
-    @Order(6)
-    @DisplayName("Deleting a table")
-    void dropTableTest() {
-        for (int i = 0; i < 3; i++) {
-            humanDao.dropTable();
+    @Order(4)
+    @DisplayName("Saving a person")
+    void saveHuman() {
+        for (Human human : people) {
+            humanDao.save(human);
+        }
+
+        for (int i = 0; i < people.length; i++) {
+            Assertions.assertEquals(people[i], humanDao.get(Long.valueOf(++i)));
         }
     }
 
     @Test
     @Order(3)
-    @DisplayName("Saving a person")
-    void saveHuman() {
-        for (Human human : people) {
-            humanDao.saveHuman(human);
-        }
-
-        for (int i = 0; i < people.length; i++) {
-            Assertions.assertEquals(people[i], humanDao.getHuman(++i));
-        }
-    }
-
-    @Test
-    @Order(2)
     @DisplayName("Get a human")
     void getHuman() {
 
-        humanDao.saveHuman(people[0]);
-        final var returnHuman = humanDao.getHuman(1);
+        humanDao.save(people[0]);
+        final var returnHuman = humanDao.get(1L);
         Assertions.assertEquals(people[0], returnHuman);
     }
 
     @Test
-    @Order(4)
+    @Order(2)
     @DisplayName("Update a human")
     void updateHuman() {
         final var human = people[0];
 
-        humanDao.saveHuman(human);
+        humanDao.save(human);
         human.setName("Jim");
         human.setLastName("Davidson");
-        humanDao.updateHuman(human);
+        humanDao.update(human);
 
-        Assertions.assertEquals(human, humanDao.getHuman(1));
+        Assertions.assertEquals(human, humanDao.get(1L));
     }
 
     @Test
-    @Order(5)
+    @Order(1)
     @DisplayName("Deleting a human")
     void deleteHuman() {
-        humanDao.saveHuman(people[0]);
-        humanDao.deleteHumanId(1);
+        humanDao.save(people[0]);
+        humanDao.deleteId(1L);
 
         Assertions.assertThrowsExactly(
                 RuntimeException.class,
-                () -> humanDao.getHuman(1));
+                () -> humanDao.get(1L));
     }
 
+    @DisplayName("Testing a table")
+    @Nested
+    class  TestTable {
+        @Test
+        @Order(6)
+        @DisplayName("Creating a table")
+        void createTableTest() {
+            for (int i = 0; i < 3; i++) {
+                humanDao.createTable();
+            }
+        }
+
+        @Test
+        @Order(5)
+        @DisplayName("Deleting a table")
+        void dropTableTest() {
+            for (int i = 0; i < 3; i++) {
+                humanDao.dropTable();
+            }
+        }
+    }
     @AfterEach
     void after() {
-        System.out.println("Next test comleted");
-        System.out.println();
+        log.info("Next test comleted");
         humanDao.dropTable();
     }
 
     @AfterAll
     static void afterAll() {
-        System.out.println("Test completed");
+        log.info("Test completed");
     }
 }
 

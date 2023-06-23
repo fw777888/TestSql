@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "name")
+@EqualsAndHashCode(exclude = {"name", "lastName"})
 
 public class Human {
     private long id;

@@ -1,3 +1,4 @@
+import lombok.extern.slf4j.Slf4j;
 import org.example.dao.DogDao;
 import org.example.model.Dog;
 import org.junit.jupiter.api.*;
@@ -5,6 +6,7 @@ import org.junit.jupiter.api.*;
 import java.util.logging.Logger;
 
 //@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Slf4j
 public class TestDogDao {
     DogDao dogDao = new DogDao();
 
@@ -16,41 +18,19 @@ public class TestDogDao {
 
     @BeforeAll
     static void beforeAll() {
-        System.out.println("Tests are started");
-        System.out.println();
+        log.info("Tests are started");
     }
 
     @BeforeEach
     void before() {
-        System.out.println("Next test starts");
-        System.out.println(this);
-        System.out.println();
+        log.info("Next test starts");
 
         dogDao.createTable();
-        System.out.println("The dog table is created");
+        log.info("The dog table is created");
     }
 
-    @Test
-    @Order(1)
-    @DisplayName("Creating table dog")
-    void createTableTest() {
-        for (int i = 0; i < 3; i++) {
-            dogDao.createTable();
-        }
-    }
 
     @Test
-    @Order(6)
-    @DisplayName("Deleting table")
-    void dropTableTest() {
-
-        for (int i = 0; i < 3; i++) {
-            dogDao.dropTable();
-        }
-    }
-
-    @Test
-    @Order(3)
     @DisplayName("Save a dog")
     void saveDog() {
 
@@ -64,7 +44,6 @@ public class TestDogDao {
 
 
     @Test
-    @Order(2)
     @DisplayName("Get dog")
     void getDog() {
         dogDao.save(dogs[0]);
@@ -74,7 +53,6 @@ public class TestDogDao {
     }
 
     @Test
-    @Order(4)
     @DisplayName(("Update dog"))
     void updateDog() {
         final var dog = dogs[0];
@@ -87,7 +65,6 @@ public class TestDogDao {
     }
 
     @Test
-    @Order(5)
     @DisplayName("Deleting dog")
     void deleteDog() {
 
@@ -99,17 +76,37 @@ public class TestDogDao {
                 () -> dogDao.get(1L));
     }
 
+    @DisplayName("Testing a table")
+    @Nested
+    class TestTable {
+        @Test
+        @DisplayName("Creating table dog")
+        void createTableTest () {
+            for (int i = 0; i < 3; i++) {
+                dogDao.createTable();
+            }
+        }
+
+        @Test
+        @DisplayName("Deleting table")
+        void dropTableTest () {
+
+            for (int i = 0; i < 3; i++) {
+                dogDao.dropTable();
+            }
+        }
+    }
+
     @AfterEach
     void after() {
-        System.out.println("Next test complete");
-        System.out.println();
+        log.info("Next test complete");
         dogDao.dropTable();
-        System.out.println("The dog table is deleted");
+        log.info("The dog table is deleted");
     }
 
     @AfterAll
     static void afterAll() {
-        System.out.println("All tests completed");
+        log.info("All tests completed");
     }
 
 

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 //DZ
-public class HumanDao {
+public class HumanDao implements Dao <Long, Human>{
 
     private final String CREATE_TABLE_HUMAN_SQL = """
             CREATE TABLE IF NOT EXISTS human (
@@ -50,11 +50,13 @@ public class HumanDao {
             """;
 
     private final Connection connection = UtilConnection.getConnection();
+
+    @Override
     public void createTable() {
 
-        try (var statement = connection.createStatement()) {
-
+        try (final var statement = connection.createStatement()) {
             statement.execute(CREATE_TABLE_HUMAN_SQL);
+
             System.out.println("Table human is created");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -62,33 +64,35 @@ public class HumanDao {
 
     }
 
+    @Override
     public void dropTable() {
 
-        try (var statement = connection.createStatement()) {
-
+        try (final var statement = connection.createStatement()) {
             statement.execute(DROP_TABLE_HUMAN_SQL);
+
             System.out.println("Table human is deleted");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void saveHuman(Human human) {
+    @Override
+    public void save(Human element) {
 
-        try (var statement = connection.createStatement()) {
-
+        try (final var statement = connection.createStatement()) {
             statement.execute(SAVE_HUMAN_SQL.formatted(
-                    human.getId(),
-                    human.getName(),
-                    human.getLastName()));
+                    element.getId(),
+                    element.getName(),
+                    element.getLastName()));
 
-            System.out.println("Human save " + human);
+            System.out.println("Human save " + element);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Human getHuman(long id) {
+    @Override
+    public Human get(Long id) {
         try (final var statement = connection.createStatement()) {
             var resultSet = statement.executeQuery(GET_HUMAN_SQL.formatted(id));
             resultSet.next();
@@ -101,15 +105,16 @@ public class HumanDao {
         }
     }
 
-    public void updateHuman(Human human) {
+    @Override
+    public void update(Human element) {
 
         try (var statement = connection.createStatement()) {
 
             final var sqlUpdate = UPDATE_HUMAN_SQL.formatted(
-                    human.getId(),
-                    human.getName(),
-                    human.getLastName(),
-                    human.getId());
+                    element.getId(),
+                    element.getName(),
+                    element.getLastName(),
+                    element.getId());
 
             statement.execute(sqlUpdate);
         } catch (SQLException e) {
@@ -117,7 +122,8 @@ public class HumanDao {
         }
     }
 
-    public void deleteHumanId(long id) {
+   @Override
+    public void deleteId(Long id) {
 
         try (var statement = connection.createStatement()) {
 
