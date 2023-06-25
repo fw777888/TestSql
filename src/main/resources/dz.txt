@@ -1,4 +1,5 @@
-1) Docker Postgres - поднять
-2) Prepared Statement
+1) findAll()
+2) dataImport
+3) переписать тесты
 
 DataGrip

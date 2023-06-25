@@ -5,6 +5,8 @@ import org.junit.jupiter.api.*;
 
 @Slf4j
 public class TestBearDao {
+
+    // before -> {class [create/drop table -> 10 bear]} ]
     BearDao bearDao = new BearDao();
 
     Bear[] bears = {

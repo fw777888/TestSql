@@ -38,7 +38,7 @@ public class DogDao implements Dao<Long, Dog> {
             SET
                 id = ?,
                 name = ?,
-                is_home = ?,
+                is_home = ?
             WHERE 
                 id = ?
             """;
@@ -99,7 +99,7 @@ public class DogDao implements Dao<Long, Dog> {
                 dog = Dog.builder()
                         .id(resultSet.getLong("id"))
                         .name(resultSet.getString("name"))
-                        .isHome(resultSet.getBoolean("isHome"))
+                        .isHome(resultSet.getBoolean("is_home"))
                         .build();
                 log.info("dog return");
             } else {

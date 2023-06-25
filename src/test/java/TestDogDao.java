@@ -2,19 +2,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dao.DogDao;
 import org.example.model.Dog;
 import org.junit.jupiter.api.*;
+import util.DataImport;
 
 import java.util.logging.Logger;
 
 //@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Slf4j
 public class TestDogDao {
-    DogDao dogDao = new DogDao();
-
-    Dog[] dogs = {
-            new Dog(1L, "Kubik", true),
-            new Dog(2L, "Zubastik", true),
-            new Dog(3L, "Wolfy", true),
-    } ;
+    private final Dog dog = new Dog(6L, "test", true);
+    private final DogDao dogDao = new DogDao();
 
     @BeforeAll
     static void beforeAll() {
@@ -25,7 +21,7 @@ public class TestDogDao {
     void before() {
         log.info("Next test starts");
 
-        dogDao.createTable();
+        DataImport.dataImport();
         log.info("The dog table is created");
     }
 
@@ -33,47 +29,37 @@ public class TestDogDao {
     @Test
     @DisplayName("Save a dog")
     void saveDog() {
+        dogDao.save(dog);
+        final var resultDog = dogDao.get(dog.getId());
 
-        for (Dog dog : dogs) {
-            dogDao.save(dog);
-        }
-        for (int i = 0; i < dogs.length; i++) {
-            Assertions.assertEquals(dogs[i], dogDao.get(Long.valueOf(i) + 1));
-        }
+        Assertions.assertEquals(dog, resultDog);
     }
 
 
     @Test
     @DisplayName("Get dog")
     void getDog() {
-        dogDao.save(dogs[0]);
-        final var returnDog = dogDao.get(1L);
-
-        Assertions.assertEquals(dogs[0], returnDog);
+        Assertions.assertDoesNotThrow(() -> dogDao.get(1L));
     }
 
     @Test
     @DisplayName(("Update dog"))
     void updateDog() {
-        final var dog = dogs[0];
+        final var resultDog = dogDao.get(1L);
 
-        dogDao.save(dog);
-        dog.setName("Sobaka");
-        dogDao.update(dog);
+        resultDog.setName("dog");
 
-        Assertions.assertEquals(dog, dogDao.get(1L));
+        dogDao.update(resultDog);
+
+        Assertions.assertEquals(resultDog, dogDao.get(1L));
     }
 
     @Test
     @DisplayName("Deleting dog")
     void deleteDog() {
-
-        dogDao.save(dogs[0]);
         dogDao.deleteId(1L);
 
-        Assertions.assertThrowsExactly(
-                RuntimeException.class,
-                () -> dogDao.get(1L));
+        Assertions.assertThrowsExactly(RuntimeException.class, () -> dogDao.get(1L));
     }
 
     @DisplayName("Testing a table")
@@ -100,7 +86,6 @@ public class TestDogDao {
     @AfterEach
     void after() {
         log.info("Next test complete");
-        dogDao.dropTable();
         log.info("The dog table is deleted");
     }
 
@@ -108,6 +93,4 @@ public class TestDogDao {
     static void afterAll() {
         log.info("All tests completed");
     }
-
-
 }

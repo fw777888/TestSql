@@ -5,6 +5,8 @@ import org.example.model.Human;
 import org.example.util.UtilConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class HumanDao implements Dao<Long, Human> {
@@ -49,6 +51,15 @@ public class HumanDao implements Dao<Long, Human> {
                 human
             WHERE  
                 id = ?           
+            """;
+
+    private final String FIND_ALL = """
+            SELECT
+                id,
+                name,
+                last_name
+            FROM 
+                human
             """;
 
     private final Connection connection = UtilConnection.getConnection();
@@ -150,5 +161,32 @@ public class HumanDao implements Dao<Long, Human> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Human> findAll() {
+        System.out.println(1);
+        List<Human> result = new ArrayList<>();
+
+        try (var preparedStatement = connection.prepareStatement(FIND_ALL)) {
+            final var resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                System.out.println(1);
+                final var human = Human.builder()
+                        .id(resultSet.getLong("id"))
+                        .lastName(resultSet.getString("last_name"))
+                        .name(resultSet.getString("name"))
+                        .build();
+                result.add(human);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return result;
+    }
+
+    public List<Human> findAll(String properties) {
+        return null;
     }
 }

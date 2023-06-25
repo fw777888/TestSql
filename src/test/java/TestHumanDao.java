@@ -3,10 +3,13 @@ import org.example.dao.HumanDao;
 import org.example.model.Human;
 import org.junit.jupiter.api.*;
 
+import java.util.List;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Slf4j
 public class TestHumanDao {
-    HumanDao humanDao = new HumanDao();
+    private final HumanDao humanDao = new HumanDao();
+    private final int SIZE_HUMAN_DB = 3;
 
     Human[] people = {
             new Human(1, "John", "Walker"),
@@ -71,6 +74,17 @@ public class TestHumanDao {
         Assertions.assertThrowsExactly(
                 RuntimeException.class,
                 () -> humanDao.get(1L));
+    }
+
+    @Test
+    void findAllTest() {
+        for (Human person : people) {
+            humanDao.save(person);
+        }
+
+        final var allHumans = humanDao.findAll();
+
+        Assertions.assertEquals(allHumans.size(), SIZE_HUMAN_DB);
     }
 
     @DisplayName("Testing a table")

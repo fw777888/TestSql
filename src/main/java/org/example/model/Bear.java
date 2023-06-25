@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode
-
 public class Bear {
 
     private long id;
