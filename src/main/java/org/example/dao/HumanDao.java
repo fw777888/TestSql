@@ -55,19 +55,18 @@ public class HumanDao implements Dao<Long, Human> {
 
     @Override
     public void createTable() {
-        try (final var statement = connection.createStatement()) {
-            statement.execute(CREATE_TABLE_HUMAN_SQL);
+        try (final var statement = connection.prepareStatement(CREATE_TABLE_HUMAN_SQL)) {
+            statement.execute();
             log.info("Table human is created");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
     public void dropTable() {
-        try (final var statement = connection.createStatement()) {
-            statement.execute(DROP_TABLE_HUMAN_SQL);
+        try (final var statement = connection.prepareStatement(DROP_TABLE_HUMAN_SQL)) {
+            statement.execute();
             log.info("Table human is deleted");
         } catch (SQLException e) {
             throw new RuntimeException(e);
