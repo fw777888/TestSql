@@ -26,8 +26,6 @@ public class DataImport {
         CAT_DAO.dropTable();
         CAT_DAO.createTable();
 
-        DOG_DAO.dropTable();
-        DOG_DAO.createTable();
         saveDog();
 
         HUMAN_DAO.dropTable();
@@ -35,6 +33,9 @@ public class DataImport {
     }
 
     private static void saveDog() {
+        DOG_DAO.dropTable();
+        DOG_DAO.createTable();
+
         final var dogs = List.of(
                 Dog.builder()
                         .id(1L)

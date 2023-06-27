@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.example.spring.DogSpring" id="dog">
+        <constructor-arg name="name" type="java.lang.String" value="Shar"/>
+        <constructor-arg name="age" value="10"/>
+    </bean>
+
+    <bean class="org.example.spring.HumanSpring" id="human">
+        <constructor-arg name="firstname" type="java.lang.String" value="Artur"/>
+        <constructor-arg name="lastname" type="java.lang.String" value="Arturov"/>
+        <constructor-arg name="money" value="10000"/>
+    </bean>
+
+    <bean class="org.example.spring.HomeSpring" id="home">
+        <constructor-arg name="address" type="java.lang.String" value="Krasnaya 1"/>
+    </bean>
+
+    <bean class="org.example.spring.AccountingSpring" id="accountingSpring">
+        <constructor-arg name="dogSpring" ref="dog"/>
+        <constructor-arg name="homeSpring" ref="home"/>
+        <constructor-arg name="humanSpring" ref="human"/>
+    </bean>
+</beans>

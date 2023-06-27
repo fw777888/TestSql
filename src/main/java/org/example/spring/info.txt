@@ -1,0 +1,61 @@
+spring -> {
+    context
+    mvc(web) (context)
+    security()
+    data(bd)
+    cloud(micro)
+    boot(
+        starter-pack(web(...))
+        autoconfig
+        undpac.
+    )
+}
+
+ioc - нашими обьектми ктото управляет
+di - реализия спринга
+
+{Dog} <-
+
+[  Dog  ] ApplicationContext
+
+
+
+singlton -
+Dog name = 'Tuzik'
+
+new Dog                 [dog1]
+new Dog                 [dog2]
+new Dog                 [dog3]
+new Dog                 [dog4]
+new Dog                 [dog5]
+
+[dog - 123] = name Max2
+
+new Dog                [123]
+new Dog                [123]
+new Dog                [123]
+new Dog                [123]
+new Dog                [123]
+new Dog                [123]
+
+
+prototype -
+new Dog                 [dog]
+new Dog                 [dog]
+new Dog                 [dog]
+new Dog                 [dog]
+new Dog                 [dog]
+
+Spring context
+xml - depr {+}
+xml/annotation
+javacode - new
+
+reader -> xml(dogSpring) -> aplicationContext(new dogSpring) <- getBean(id, class)
+
+
+[dog] [home] [human] [Accounting]
+
+Accounting - [dog] [home] [human]
+
+HumanTwo = [human] [dog]
