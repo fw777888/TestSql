@@ -5,7 +5,10 @@ import org.example.model.Dog;
 import org.example.util.UtilConnection;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class DogDao implements Dao<Long, Dog> {
@@ -47,6 +50,15 @@ public class DogDao implements Dao<Long, Dog> {
                 dog
             WHERE 
                 id = ?
+            """;
+
+    private final String FIND_ALL = """
+            SELECT 
+                id,
+                name,
+                is_home
+            FROM 
+                dog
             """;
 
     private final Connection connection = UtilConnection.getConnection();
@@ -136,4 +148,27 @@ public class DogDao implements Dao<Long, Dog> {
            throw new RuntimeException(e);
        }
     }
+
+    public List<Dog> findAll() {
+        System.out.println(1);
+        List<Dog> result = new ArrayList<>();
+
+        try (var preparedStatement = connection.prepareStatement(FIND_ALL)) {
+            final var resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                final var dog = Dog.builder()
+                        .id(resultSet.getLong("id"))
+                        .name(resultSet.getString("name"))
+                        .isHome(resultSet.getBoolean("is_home"))
+                        .build();
+                result.add(dog);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public List<Dog> findAll(String properties) {return null; }
 }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.*;
 public class TestBearDao {
 
     // before -> {class [create/drop table -> 10 bear]} ]
-    BearDao bearDao = new BearDao();
+    private final BearDao bearDao = new BearDao();
 
     Bear[] bears = {
             new Bear(1, "Balu"),
@@ -67,6 +67,16 @@ public class TestBearDao {
         Assertions.assertThrowsExactly(
                 RuntimeException.class,
                 () -> bearDao.get(1L));
+    }
+
+    @Test
+    void findAllTest() {
+        for (Bear bear : bears) {
+            bearDao.save(bear);
+        }
+        final var allBears = bearDao.findAll();
+
+        Assertions.assertEquals(allBears.size(), 3);
     }
 
     @DisplayName("Testing a table")

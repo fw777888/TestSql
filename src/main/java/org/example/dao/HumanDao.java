@@ -182,7 +182,6 @@ public class HumanDao implements Dao<Long, Human> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return result;
     }
 

@@ -4,9 +4,9 @@ import lombok.extern.log4j.Log4j;
 import org.example.model.Bear;
 import org.example.util.UtilConnection;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j
 public class BearDao implements Dao <Long, Bear>{
@@ -47,6 +47,14 @@ public class BearDao implements Dao <Long, Bear>{
                 bear
             WHERE 
                 id = ?
+            """;
+
+    private final String FIND_ALL = """
+            SELECT 
+                id,
+                name
+            FROM 
+                bear
             """;
 
     private final Connection connection = UtilConnection.getConnection();
@@ -132,4 +140,27 @@ public class BearDao implements Dao <Long, Bear>{
         }
 
     }
+
+    public List<Bear> findAll() {
+        System.out.println(1);
+        List<Bear> result = new ArrayList<>();
+
+        try (var statement = connection.prepareStatement(FIND_ALL)) {
+            final var resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                System.out.println(1);
+                final var bear = Bear.builder()
+                        .id(resultSet.getLong("id"))
+                        .name(resultSet.getString("name"))
+                        .build();
+                result.add(bear);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public List<Bear> findAll(String properties) {return null;}
 }

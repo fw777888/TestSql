@@ -12,6 +12,12 @@ public class TestDogDao {
     private final Dog dog = new Dog(6L, "test", true);
     private final DogDao dogDao = new DogDao();
 
+    Dog[] dogs = {
+            new Dog(1L, "Rex", true),
+            new Dog(2L, "Sobaka", true),
+            new Dog(3L, "Scooby-Doo", true)
+    };
+
     @BeforeAll
     static void beforeAll() {
         log.info("Tests are started");
@@ -62,6 +68,16 @@ public class TestDogDao {
         Assertions.assertThrowsExactly(RuntimeException.class, () -> dogDao.get(1L));
     }
 
+    @Test
+    void findAllTest() {
+        for (Dog dog: dogs) {
+            dogDao.save(dog);
+        }
+
+        final var allDogs = dogDao.findAll();
+
+        Assertions.assertEquals(allDogs.size(), 3);
+    }
     @DisplayName("Testing a table")
     @Nested
     class TestTable {
