@@ -86,6 +86,17 @@ public class TestCatDao {
                 () -> catDao.get(1L));
     }
 
+    @Test
+    void findAllTest() {
+        for (Cat cat : cats) {
+            catDao.save(cat);
+        }
+
+        final var allCats = catDao.findAll();
+
+        Assertions.assertEquals(allCats.size(), 5);
+    }
+
     @DisplayName("Тестирование таблицы")
     @Nested
     class TestTable {

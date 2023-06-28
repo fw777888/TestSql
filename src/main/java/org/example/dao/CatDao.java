@@ -5,10 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.example.model.Cat;
 import org.example.util.UtilConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +50,14 @@ public class CatDao implements Dao<Long, Cat> {
                 cat
             WHERE
                 id = ?
+            """;
+
+    private final String FIND_ALL = """
+            SELECT
+                id,
+                name 
+            FROM 
+                cat
             """;
 
     private final Connection connection = UtilConnection.getConnection();
@@ -144,4 +149,25 @@ public class CatDao implements Dao<Long, Cat> {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Cat> findAll() {
+        List<Cat> result = new ArrayList<>();
+
+        try (var preparedStatement = connection.prepareStatement(FIND_ALL)) {
+            final var resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                final var cat = Cat.builder()
+                        .id(resultSet.getLong("id"))
+                        .name(resultSet.getString("name"))
+                        .build();
+                result.add(cat);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public List<Cat> findAll(String properties) { return null; }
 }

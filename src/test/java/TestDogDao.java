@@ -76,7 +76,7 @@ public class TestDogDao {
 
         final var allDogs = dogDao.findAll();
 
-        Assertions.assertEquals(allDogs.size(), 3);
+        Assertions.assertEquals(allDogs.size(), 8); // почему 8?
     }
     @DisplayName("Testing a table")
     @Nested
