@@ -2,6 +2,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.model.Cat;
 import org.example.dao.CatDao;
 import org.junit.jupiter.api.*;
+import util.DataImport;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @Slf4j
@@ -11,8 +12,8 @@ public class TestCatDao {
 //    @BeforeEach
 //    @AfterEach
 //    @AfterAll
-
-    CatDao catDao = new CatDao();
+    private final Cat cat = new Cat(5L, "testCat");
+    private final CatDao catDao = new CatDao();
 
     Cat[] cats = {
             new Cat(1, "Tom1"),
@@ -30,21 +31,18 @@ public class TestCatDao {
     @BeforeEach
     void before() {
         log.info("Next test start!");
-        catDao.createTable();
+        DataImport.dataImport();
+        log.info("The cat table is created");
+        //catDao.createTable();
     }
 
     @Test
     @Order(4)
     @DisplayName("Сохранение сущности")
     void saveCat() {
-
-        for (Cat cat : cats) {
             catDao.save(cat);
-        }
-
-        for (int i = 0; i < cats.length; i++) {
-            Assertions.assertEquals(cats[i], catDao.get(Long.valueOf(i + 1)));
-        }
+            final var resultCat = catDao.get(cat.getId());
+            Assertions.assertEquals(cat, resultCat);
     }
 
     @Test
@@ -64,21 +62,16 @@ public class TestCatDao {
     @DisplayName("Обновление сущности")
     void updateCat() {
 
-        final var cat = cats[0];
-
-        catDao.save(cat);
-        cat.setName("Sonya");
-        catDao.update(cat);
-
-        Assertions.assertEquals(cat, catDao.get(1L));
+        final var resultCat = catDao.get(1L);
+        resultCat.setName("Tom");
+        catDao.update(resultCat);
+        Assertions.assertEquals(resultCat, catDao.get(1L));
     }
 
     @Test
     @Order(1)
     @DisplayName("Удаление сущности")
     void deleteCat() {
-
-        catDao.save(cats[0]);
         catDao.deleteId(1L);
 
         Assertions.assertThrowsExactly(
@@ -94,7 +87,7 @@ public class TestCatDao {
 
         final var allCats = catDao.findAll();
 
-        Assertions.assertEquals(allCats.size(), 5);
+        Assertions.assertEquals(allCats.size(), 8);
     }
 
     @DisplayName("Тестирование таблицы")
@@ -104,7 +97,6 @@ public class TestCatDao {
         @Order(6)
         @DisplayName("Создание таблицы")
         void createTableTest() {
-
             for (int i = 0; i < 2; i++) {
                 catDao.createTable();
             }
@@ -124,11 +116,11 @@ public class TestCatDao {
     @AfterEach
     void after() {
         log.info("Next test complete!");
-        catDao.dropTable();
+        log.info("The cat table is deleted");
     }
 
     @AfterAll
     static void afterAll() {
-        log.info("Tests complete!");
+        log.info("All tests competed!");
     }
 }

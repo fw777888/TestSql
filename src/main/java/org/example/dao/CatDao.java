@@ -60,6 +60,7 @@ public class CatDao implements Dao<Long, Cat> {
                 cat
             """;
 
+
     private final Connection connection = UtilConnection.getConnection();
 
     @Override
